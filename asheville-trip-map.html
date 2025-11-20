@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asheville Trip Guide - Nov 28 - Dec 1</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <style>
         * {
             margin: 0;
@@ -16,6 +17,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: #1a1a1a;
             color: #e0e0e0;
+            overflow-x: hidden;
         }
         
         .header {
@@ -39,6 +41,7 @@
         .container {
             display: flex;
             height: calc(100vh - 120px);
+            min-height: 500px;
         }
         
         .sidebar {
@@ -46,6 +49,7 @@
             background: #242424;
             overflow-y: auto;
             border-right: 2px solid #333;
+            flex-shrink: 0;
         }
         
         .filters {
@@ -68,6 +72,7 @@
             transition: all 0.3s;
             font-size: 0.9em;
             color: #e0e0e0;
+            user-select: none;
         }
         
         .filter-btn:hover {
@@ -137,6 +142,7 @@
         #map {
             flex: 1;
             background: #1a1a1a;
+            min-width: 0;
         }
         
         .leaflet-popup-content-wrapper {
@@ -149,6 +155,7 @@
         .leaflet-popup-content {
             margin: 15px;
             font-size: 14px;
+            min-width: 200px;
         }
         
         .popup-title {
@@ -176,29 +183,8 @@
             background: #2a2a2a;
         }
         
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                height: 40vh;
-                border-right: none;
-                border-bottom: 2px solid #333;
-            }
-            
-            #map {
-                height: 60vh;
-            }
-            
-            .header h1 {
-                font-size: 1.5em;
-            }
-            
-            .header p {
-                font-size: 0.9em;
-            }
+        .leaflet-container {
+            background: #1a1a1a;
         }
         
         .legend {
@@ -213,6 +199,7 @@
             font-weight: bold;
             margin-bottom: 10px;
             color: #fff;
+            font-size: 1.1em;
         }
         
         .legend-item {
@@ -228,6 +215,43 @@
             border-radius: 50%;
             margin-right: 10px;
             border: 2px solid white;
+            flex-shrink: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: 50vh;
+                border-right: none;
+                border-bottom: 2px solid #333;
+            }
+            
+            #map {
+                height: 50vh;
+                width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .header p {
+                font-size: 0.9em;
+            }
+            
+            .filters {
+                padding: 15px;
+            }
+            
+            .filter-btn {
+                padding: 6px 12px;
+                font-size: 0.85em;
+            }
         }
     </style>
 </head>
@@ -254,26 +278,26 @@
                 <div class="legend-title">Map Legend</div>
                 <div class="legend-item">
                     <div class="legend-icon" style="background: #ff9800;"></div>
-                    <span>Breakfast</span>
+                    <span>Breakfast Spots</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-icon" style="background: #4caf50;"></div>
-                    <span>Lunch</span>
+                    <span>Lunch Spots</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-icon" style="background: #f44336;"></div>
-                    <span>Dinner</span>
+                    <span>Dinner Spots</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-icon" style="background: #ffc107;"></div>
-                    <span>Brewery</span>
+                    <span>Breweries</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-icon" style="background: #9c27b0;"></div>
-                    <span>Shop</span>
+                    <span>Unique Shops</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-icon" style="background: #2196f3; width: 30px; border-radius: 4px;"></div>
+                    <div class="legend-icon" style="background: #2196f3; width: 24px; border-radius: 4px;"></div>
                     <span>Your Airbnb</span>
                 </div>
             </div>
@@ -282,10 +306,16 @@
         <div id="map"></div>
     </div>
     
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        const airbnb = { lat: 35.5360973, lng: -82.6927363, name: "Your Airbnb" };
+        // Airbnb location
+        const airbnb = { 
+            lat: 35.5360973, 
+            lng: -82.6927363, 
+            name: "Your Airbnb",
+            address: "805 Case Cove Rd, Candler, NC"
+        };
         
+        // All places with detailed info
         const places = [
             // Breakfast
             { name: "Biscuit Head", category: "breakfast", lat: 35.5951, lng: -82.5515, description: "Famous cathead biscuits and gravy flights. Weekend brunch favorite with creative Southern breakfast.", distance: "15 min" },
@@ -347,18 +377,22 @@
         let map, markers = [], currentFilter = 'all';
         
         function initMap() {
+            // Initialize map
             map = L.map('map', {
                 zoomControl: true,
                 scrollWheelZoom: true
             }).setView([35.5750, -82.5850], 12);
             
+            // Add tile layer
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
                 maxZoom: 19
             }).addTo(map);
             
+            // Add Airbnb marker
             const airbnbIcon = L.divIcon({
-                html: '<div style="background: #2196f3; width: 30px; height: 30px; border-radius: 4px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; font-weight: bold; color: white;">🏠</div>',
+                html: '<div style="background: #2196f3; width: 30px; height: 30px; border-radius: 4px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 16px;">🏠</div>',
                 className: '',
                 iconSize: [30, 30],
                 iconAnchor: [15, 15]
@@ -366,8 +400,9 @@
             
             L.marker([airbnb.lat, airbnb.lng], { icon: airbnbIcon })
                 .addTo(map)
-                .bindPopup(`<div class="popup-title">🏠 ${airbnb.name}</div><div class="popup-description">805 Case Cove Rd, Candler, NC</div>`);
+                .bindPopup(`<div class="popup-title">🏠 ${airbnb.name}</div><div class="popup-description">${airbnb.address}</div>`);
             
+            // Add place markers
             places.forEach(place => {
                 const icon = L.divIcon({
                     html: `<div style="background: ${categoryColors[place.category]}; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.5);"></div>`,
@@ -398,7 +433,7 @@
                 ? places 
                 : places.filter(p => p.category === currentFilter);
             
-            filtered.forEach((place, idx) => {
+            filtered.forEach(place => {
                 const card = document.createElement('div');
                 card.className = 'place-card';
                 card.innerHTML = `
@@ -408,7 +443,7 @@
                     <div class="place-distance">🚗 ${place.distance} from your Airbnb</div>
                 `;
                 
-                card.onclick = () => {
+                card.addEventListener('click', function() {
                     document.querySelectorAll('.place-card').forEach(c => c.classList.remove('selected'));
                     card.classList.add('selected');
                     
@@ -417,7 +452,7 @@
                         map.setView([place.lat, place.lng], 15);
                         marker.openPopup();
                     }
-                };
+                });
                 
                 list.appendChild(card);
             });
@@ -425,7 +460,7 @@
         
         function setupFilters() {
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.onclick = () => {
+                btn.addEventListener('click', function() {
                     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     
@@ -440,15 +475,16 @@
                     });
                     
                     renderPlacesList();
-                };
+                });
             });
         }
         
-        window.onload = () => {
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
             initMap();
             renderPlacesList();
             setupFilters();
-        };
+        });
     </script>
 </body>
 </html>
