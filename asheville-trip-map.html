@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asheville Trip Guide - Nov 28 - Dec 1</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .container {
+            display: flex;
+            height: calc(100vh - 120px);
+        }
+        
+        .sidebar {
+            width: 400px;
+            background: #242424;
+            overflow-y: auto;
+            border-right: 2px solid #333;
+        }
+        
+        .filters {
+            padding: 20px;
+            background: #2a2a2a;
+            border-bottom: 2px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .filter-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 4px;
+            background: #3a3a3a;
+            border: 2px solid #555;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+            color: #e0e0e0;
+        }
+        
+        .filter-btn:hover {
+            background: #4a4a4a;
+            transform: translateY(-2px);
+        }
+        
+        .filter-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .place-card {
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .place-card:hover {
+            background: #2a2a2a;
+        }
+        
+        .place-card.selected {
+            background: #3a3a3a;
+            border-left: 4px solid #667eea;
+        }
+        
+        .place-name {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        
+        .place-category {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .cat-breakfast { background: #ff9800; color: white; }
+        .cat-lunch { background: #4caf50; color: white; }
+        .cat-dinner { background: #f44336; color: white; }
+        .cat-brewery { background: #ffc107; color: #333; }
+        .cat-shop { background: #9c27b0; color: white; }
+        
+        .place-description {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .place-distance {
+            font-size: 0.85em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        #map {
+            flex: 1;
+            background: #1a1a1a;
+        }
+        
+        .leaflet-popup-content-wrapper {
+            background: #2a2a2a;
+            color: #e0e0e0;
+            border-radius: 12px;
+            padding: 0;
+        }
+        
+        .leaflet-popup-content {
+            margin: 15px;
+            font-size: 14px;
+        }
+        
+        .popup-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        
+        .popup-description {
+            margin-bottom: 10px;
+            line-height: 1.4;
+            color: #ccc;
+        }
+        
+        .popup-distance {
+            font-weight: bold;
+            color: #667eea;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #444;
+        }
+        
+        .leaflet-popup-tip {
+            background: #2a2a2a;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: 40vh;
+                border-right: none;
+                border-bottom: 2px solid #333;
+            }
+            
+            #map {
+                height: 60vh;
+            }
+            
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .header p {
+                font-size: 0.9em;
+            }
+        }
+        
+        .legend {
+            background: #2a2a2a;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 8px;
+            border: 2px solid #333;
+        }
+        
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+        
+        .legend-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🗺️ Asheville Adventure Guide</h1>
+        <p>Nov 28 - Dec 1, 2024 | Staying in Candler, NC</p>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar">
+            <div class="filters">
+                <div class="filter-btn active" data-filter="all">All Places</div>
+                <div class="filter-btn" data-filter="breakfast">Breakfast</div>
+                <div class="filter-btn" data-filter="lunch">Lunch</div>
+                <div class="filter-btn" data-filter="dinner">Dinner</div>
+                <div class="filter-btn" data-filter="brewery">Breweries</div>
+                <div class="filter-btn" data-filter="shop">Shops</div>
+            </div>
+            
+            <div id="placesList"></div>
+            
+            <div class="legend">
+                <div class="legend-title">Map Legend</div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #ff9800;"></div>
+                    <span>Breakfast</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #4caf50;"></div>
+                    <span>Lunch</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #f44336;"></div>
+                    <span>Dinner</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #ffc107;"></div>
+                    <span>Brewery</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #9c27b0;"></div>
+                    <span>Shop</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="background: #2196f3; width: 30px; border-radius: 4px;"></div>
+                    <span>Your Airbnb</span>
+                </div>
+            </div>
+        </div>
+        
+        <div id="map"></div>
+    </div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const airbnb = { lat: 35.5360973, lng: -82.6927363, name: "Your Airbnb" };
+        
+        const places = [
+            // Breakfast
+            { name: "Biscuit Head", category: "breakfast", lat: 35.5951, lng: -82.5515, description: "Famous cathead biscuits and gravy flights. Weekend brunch favorite with creative Southern breakfast.", distance: "15 min" },
+            { name: "Sunny Point Cafe", category: "breakfast", lat: 35.5688, lng: -82.5891, description: "Farm-to-table West Asheville gem. Known for incredible huevos rancheros and fresh ingredients.", distance: "12 min" },
+            { name: "Early Girl Eatery", category: "breakfast", lat: 35.5964, lng: -82.5515, description: "Downtown favorite with all-day breakfast. Local ingredients, Southern comfort classics.", distance: "15 min" },
+            { name: "All Day Darling", category: "breakfast", lat: 35.5990, lng: -82.5589, description: "Montford neighborhood spot with shakshuka and amazing sourdough pancakes.", distance: "16 min" },
+            { name: "Tupelo Honey", category: "breakfast", lat: 35.5946, lng: -82.5515, description: "Downtown Southern comfort. Famous shrimp & grits, sweet potato pancakes.", distance: "15 min" },
+            { name: "Over Easy Cafe", category: "breakfast", lat: 35.5955, lng: -82.5510, description: "Downtown breakfast specialist. Best eggs benedict in town, cozy atmosphere.", distance: "15 min" },
+            { name: "5 Points Restaurant", category: "breakfast", lat: 35.5715, lng: -82.5940, description: "Greek diner with all-day breakfast. Budget-friendly, huge portions, local favorite.", distance: "13 min" },
+            
+            // Lunch
+            { name: "12 Bones Smokehouse", category: "lunch", lat: 35.5875, lng: -82.5652, description: "River Arts District BBQ legend. Obama ate here. Famous ribs, corn pudding. Lunch only.", distance: "14 min" },
+            { name: "Chai Pani", category: "lunch", lat: 35.5915, lng: -82.5558, description: "South Slope Indian street food. James Beard winner. Incredible chaat, thali plates.", distance: "14 min" },
+            { name: "Baba Nahm", category: "lunch", lat: 35.5950, lng: -82.5520, description: "Downtown Mediterranean. Fresh chicken shawarma, hummus bowls, vibrant flavors.", distance: "15 min" },
+            { name: "Buxton Chicken Palace", category: "lunch", lat: 35.5960, lng: -82.5512, description: "S&W Market. Local version of Chick-fil-a but better. Crispy chicken sandwiches.", distance: "15 min" },
+            { name: "Roman's Deli", category: "lunch", lat: 35.5952, lng: -82.5518, description: "Downtown pressed sandwich specialist. Fresh ingredients, perfect lunch spot.", distance: "15 min" },
+            { name: "Wild Ginger", category: "lunch", lat: 35.5545, lng: -82.5598, description: "South Asheville Vietnamese. Excellent pho, fresh spring rolls, authentic flavors.", distance: "12 min" },
+            { name: "Taco Billy", category: "lunch", lat: 35.5958, lng: -82.5514, description: "Downtown taco spot. Breakfast and lunch tacos with creative fillings.", distance: "15 min" },
+            
+            // Dinner
+            { name: "Cúrate", category: "dinner", lat: 35.5945, lng: -82.5525, description: "Downtown Spanish tapas. Must reserve ahead. James Beard winner, authentic Spanish.", distance: "15 min" },
+            { name: "The Admiral", category: "dinner", lat: 35.5688, lng: -82.5895, description: "West Asheville dive bar meets fine dining. Creative small plates, craft cocktails.", distance: "12 min" },
+            { name: "Vivian", category: "dinner", lat: 35.5948, lng: -82.5522, description: "Downtown French-inspired dining. Romantic ambiance, seasonal menu, wine list.", distance: "15 min" },
+            { name: "Jargon", category: "dinner", lat: 35.5918, lng: -82.5555, description: "Experimental menu with unique flavor combinations. Hip South Slope location.", distance: "14 min" },
+            { name: "The Market Place", category: "dinner", lat: 35.5950, lng: -82.5518, description: "Downtown farm-to-table. James Beard nominated. Local ingredients, upscale Southern.", distance: "15 min" },
+            { name: "Mother", category: "dinner", lat: 35.5912, lng: -82.5562, description: "South Slope deli sandwiches and wine. Creative combinations, natural wine selection.", distance: "14 min" },
+            
+            // Breweries
+            { name: "Burial Beer Co.", category: "brewery", lat: 35.5908, lng: -82.5565, description: "South Slope metalhead vibe. Amazing sours, stouts, IPAs. Best brewery in Asheville.", distance: "14 min" },
+            { name: "Hi-Wire Brewing", category: "brewery", lat: 35.5915, lng: -82.5558, description: "South Slope with rooftop. Sours, wild ales, Tiki Easy bar inside. Great vibes.", distance: "14 min" },
+            { name: "Green Man Brewery", category: "brewery", lat: 35.5918, lng: -82.5555, description: "South Slope English-style ales. 3-story building with rooftop. Original Asheville brewery.", distance: "14 min" },
+            { name: "Zillicoah Beer Company", category: "brewery", lat: 35.5872, lng: -82.5658, description: "River Arts District by the river. Locals' favorite, outdoor seating, European-style lagers.", distance: "14 min" },
+            { name: "Highland Brewing Company", category: "brewery", lat: 35.5965, lng: -82.5508, description: "Downtown S&W Market location. Asheville's first legal brewery. Classic ales.", distance: "15 min" },
+            { name: "Wedge Brewing Company", category: "brewery", lat: 35.5868, lng: -82.5660, description: "River Arts District. Outdoor beer garden, pizza, riverside views. Dog friendly.", distance: "14 min" },
+            { name: "Asheville Brewing Co.", category: "brewery", lat: 35.5920, lng: -82.5552, description: "South Slope. Oldest brewery in town, movie theater inside. Pizza and pints.", distance: "14 min" },
+            { name: "Twin Leaf Brewery", category: "brewery", lat: 35.5910, lng: -82.5560, description: "South Slope Belgian-style ales. Small batch, traditional brewing methods.", distance: "14 min" },
+            { name: "Archetype Brewing", category: "brewery", lat: 35.5690, lng: -82.5888, description: "West Asheville stylish spot. Wild ales, barrel-aged beers, modern aesthetic.", distance: "12 min" },
+            
+            // Shops
+            { name: "House of Black Cat Magic", category: "shop", lat: 35.5685, lng: -82.5898, description: "West Asheville metaphysical shop + black cat lounge! Crystals, tarot, witchy vibes.", distance: "12 min" },
+            { name: "Dark & Deviant Oddities", category: "shop", lat: 35.5948, lng: -82.5520, description: "Antique/oddity shop with life after death theme. Taxidermy, curiosities, unique finds.", distance: "15 min" },
+            { name: "Lexington Glassworks", category: "shop", lat: 35.5952, lng: -82.5515, description: "Downtown working glass-blowing studio. Watch artists create, buy beautiful pieces.", distance: "15 min" },
+            { name: "Madam Clutterbucket's", category: "shop", lat: 35.5688, lng: -82.5892, description: "West Asheville playful gifts. Sensory-friendly, neurodiverse universe of oddities.", distance: "12 min" },
+            { name: "L.O.F.T. of Asheville", category: "shop", lat: 35.5955, lng: -82.5512, description: "Downtown local products, eclectic decor, oddities. Support local makers.", distance: "15 min" },
+            { name: "Woolworth Walk", category: "shop", lat: 35.5958, lng: -82.5510, description: "Downtown 170+ local artists in historic building. Old soda fountain still operating!", distance: "15 min" },
+            { name: "Battery Park Book Exchange", category: "shop", lat: 35.5960, lng: -82.5508, description: "Grove Arcade books + champagne bar. Sip bubbly while browsing. Unique combo!", distance: "15 min" },
+            { name: "Marquee Asheville", category: "shop", lat: 35.5870, lng: -82.5655, description: "River Arts District 350+ vendors. Massive vintage market, antiques, local art.", distance: "14 min" },
+            { name: "Raven and Crone", category: "shop", lat: 35.5945, lng: -82.5525, description: "Metaphysical supplies downtown. Crystals, herbs, tarot, books, spiritual tools.", distance: "15 min" }
+        ];
+        
+        const categoryColors = {
+            breakfast: '#ff9800',
+            lunch: '#4caf50',
+            dinner: '#f44336',
+            brewery: '#ffc107',
+            shop: '#9c27b0'
+        };
+        
+        let map, markers = [], currentFilter = 'all';
+        
+        function initMap() {
+            map = L.map('map', {
+                zoomControl: true,
+                scrollWheelZoom: true
+            }).setView([35.5750, -82.5850], 12);
+            
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+                maxZoom: 19
+            }).addTo(map);
+            
+            const airbnbIcon = L.divIcon({
+                html: '<div style="background: #2196f3; width: 30px; height: 30px; border-radius: 4px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; font-weight: bold; color: white;">🏠</div>',
+                className: '',
+                iconSize: [30, 30],
+                iconAnchor: [15, 15]
+            });
+            
+            L.marker([airbnb.lat, airbnb.lng], { icon: airbnbIcon })
+                .addTo(map)
+                .bindPopup(`<div class="popup-title">🏠 ${airbnb.name}</div><div class="popup-description">805 Case Cove Rd, Candler, NC</div>`);
+            
+            places.forEach(place => {
+                const icon = L.divIcon({
+                    html: `<div style="background: ${categoryColors[place.category]}; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.5);"></div>`,
+                    className: '',
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
+                });
+                
+                const marker = L.marker([place.lat, place.lng], { icon })
+                    .bindPopup(`
+                        <div class="popup-title">${place.name}</div>
+                        <div class="place-category cat-${place.category}">${place.category}</div>
+                        <div class="popup-description">${place.description}</div>
+                        <div class="popup-distance">🚗 ${place.distance} from Airbnb</div>
+                    `);
+                
+                marker.placeData = place;
+                markers.push(marker);
+                marker.addTo(map);
+            });
+        }
+        
+        function renderPlacesList() {
+            const list = document.getElementById('placesList');
+            list.innerHTML = '';
+            
+            const filtered = currentFilter === 'all' 
+                ? places 
+                : places.filter(p => p.category === currentFilter);
+            
+            filtered.forEach((place, idx) => {
+                const card = document.createElement('div');
+                card.className = 'place-card';
+                card.innerHTML = `
+                    <div class="place-name">${place.name}</div>
+                    <div class="place-category cat-${place.category}">${place.category}</div>
+                    <div class="place-description">${place.description}</div>
+                    <div class="place-distance">🚗 ${place.distance} from your Airbnb</div>
+                `;
+                
+                card.onclick = () => {
+                    document.querySelectorAll('.place-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    
+                    const marker = markers.find(m => m.placeData.name === place.name);
+                    if (marker) {
+                        map.setView([place.lat, place.lng], 15);
+                        marker.openPopup();
+                    }
+                };
+                
+                list.appendChild(card);
+            });
+        }
+        
+        function setupFilters() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    currentFilter = btn.dataset.filter;
+                    
+                    markers.forEach(marker => {
+                        if (currentFilter === 'all' || marker.placeData.category === currentFilter) {
+                            marker.addTo(map);
+                        } else {
+                            map.removeLayer(marker);
+                        }
+                    });
+                    
+                    renderPlacesList();
+                };
+            });
+        }
+        
+        window.onload = () => {
+            initMap();
+            renderPlacesList();
+            setupFilters();
+        };
+    </script>
+</body>
+</html>
