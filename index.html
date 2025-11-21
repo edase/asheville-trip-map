@@ -317,54 +317,77 @@
         
         // All places with detailed info
         const places = [
-    // Breakfast (verified)
-    { name: "Biscuit Head", category: "breakfast", lat: 35.5778943, lng: -82.5927613, description: "Famous cathead biscuits and gravy flights. Weekend brunch favorite with creative Southern breakfast.", distance: "~22 min" },
-    { name: "Sunny Point Cafe", category: "breakfast", lat: 35.5785850, lng: -82.5888464, description: "Farm-to-table West Asheville gem. Known for incredible huevos rancheros and fresh ingredients.", distance: "~21 min" },
-    { name: "Early Girl Eatery", category: "breakfast", lat: 35.5948571, lng: -82.5549502, description: "Downtown favorite with all-day breakfast. Local ingredients, Southern comfort classics.", distance: "~24 min" },
-    { name: "All Day Darling", category: "breakfast", lat: 35.597201, lng: -82.548846, description: "Montford neighborhood spot with shakshuka and amazing sourdough pancakes.", distance: "~25 min" },
-    { name: "Tupelo Honey", category: "breakfast", lat: 35.5947513, lng: -82.5548028, description: "Downtown Southern comfort. Famous shrimp & grits, sweet potato pancakes.", distance: "~24 min" },
-    { name: "Over Easy Cafe", category: "breakfast", lat: 35.595090, lng: -82.553900, description: "Downtown breakfast specialist. Cozy atmosphere and tasty eggs benedict.", distance: "~24 min" },
-    { name: "5 Points Restaurant", category: "breakfast", lat: 35.572222, lng: -82.593056, description: "Greek diner with all-day breakfast. Budget-friendly, huge portions, local favorite.", distance: "~19 min" },
+  // Breakfast (original + extras)
+  { name: "Biscuit Head", category: "breakfast", lat: 35.5778943, lng: -82.5927613, description: "Cathead biscuits, creative gravy flights, Southern brunch classics — great for weekend brunch lines.", distance: "~22 min" },
+  { name: "Sunny Point Café", category: "breakfast", lat: 35.5785850, lng: -82.5888464, description: "West Asheville farm-to-table cafe. Stellar huevos rancheros and fresh, seasonal breakfast plates.", distance: "~21 min" },
+  { name: "Early Girl Eatery", category: "breakfast", lat: 35.5948571, lng: -82.5549502, description: "Downtown staple with all-day breakfast — Southern comfort dishes made from local ingredients.", distance: "~24 min" },
+  { name: "All Day Darling", category: "breakfast", lat: 35.597201, lng: -82.548846, description: "Montford neighborhood cafe serving shakshuka, fresh pastries and excellent coffee — cozy and relaxed.", distance: "~25 min" },
+  { name: "Tupelo Honey", category: "breakfast", lat: 35.5947513, lng: -82.5548028, description: "Southern comfort with signature sweet potato pancakes and shrimp & grits; good for groups.", distance: "~24 min" },
+  { name: "Over Easy Cafe", category: "breakfast", lat: 35.59509, lng: -82.55390, description: "Classic downtown breakfast spot — strong coffee, hearty plates, reliable eggs benedict.", distance: "~24 min" },
+  { name: "5 Points Restaurant", category: "breakfast", lat: 35.572222, lng: -82.593056, description: "Old-school Greek diner offering large portions and a no-frills breakfast menu.", distance: "~19 min" },
 
-    // Lunch (verified)
-    { name: "12 Bones Smokehouse", category: "lunch", lat: 35.587567, lng: -82.564923, description: "River Arts District BBQ legend. Famous ribs, corn pudding. Lunch only.", distance: "~24 min" },
-    { name: "Chai Pani", category: "lunch", lat: 35.591540, lng: -82.555800, description: "South Slope Indian street food. James Beard winner. Incredible chaat and plates.", distance: "~23 min" },
-    { name: "Baba Nahm", category: "lunch", lat: 35.59502, lng: -82.55202, description: "Downtown Mediterranean. Fresh chicken shawarma, hummus bowls, vibrant flavors.", distance: "~24 min" },
-    { name: "Buxton Chicken Palace", category: "lunch", lat: 35.596025, lng: -82.551232, description: "S&W Market — crispy chicken sandwiches and local favorites.", distance: "~24 min" },
-    { name: "Roman's Deli", category: "lunch", lat: 35.595200, lng: -82.551800, description: "Downtown pressed sandwich specialist. Fresh ingredients, perfect lunch spot.", distance: "~24 min" },
-    { name: "Wild Ginger", category: "lunch", lat: 35.554500, lng: -82.559800, description: "South Asheville Vietnamese. Excellent pho, fresh spring rolls, authentic flavors.", distance: "~18 min" },
-    { name: "Taco Billy", category: "lunch", lat: 35.595800, lng: -82.551400, description: "Downtown taco spot. Breakfast and lunch tacos with creative fillings.", distance: "~24 min" },
+  // Breakfast extras (new)
+  { name: "Hole Doughnuts", category: "breakfast", lat: 35.597050, lng: -82.553000, description: "Handmade, yeast-raised doughnuts with rotating glazes — a downtown favorite for quick bites.", distance: "~25 min" },
+  { name: "The Rhu", category: "breakfast", lat: 35.599200, lng: -82.548300, description: "Small-batch breakfast and pastries with a focus on quality coffee and seasonal ingredients.", distance: "~26 min" },
 
-    // Dinner (partially verified — these coordinates taken from authoritative listings)
-    { name: "Cúrate", category: "dinner", lat: 35.594480, lng: -82.552490, description: "Downtown Spanish tapas. Must reserve ahead. Authentic Spanish small plates.", distance: "~24 min" },
-    { name: "The Admiral", category: "dinner", lat: 35.568760, lng: -82.589520, description: "West Asheville dive-bar-meets-fine-dining. Creative small plates, craft cocktails.", distance: "~19 min" },
-    { name: "Vivian", category: "dinner", lat: 35.594820, lng: -82.552210, description: "French-inspired dining. Romantic ambiance, seasonal menu, wine list.", distance: "~24 min" },
-    { name: "Jargon", category: "dinner", lat: 35.591820, lng: -82.555520, description: "Experimental menu with unique flavor combinations on South Slope.", distance: "~23 min" },
-    { name: "The Market Place", category: "dinner", lat: 35.595020, lng: -82.551760, description: "Downtown farm-to-table. Local ingredients and upscale Southern fare.", distance: "~24 min" },
-    { name: "Mother", category: "dinner", lat: 35.591200, lng: -82.556200, description: "South Slope deli sandwiches and natural wine selection.", distance: "~23 min" },
+  // Lunch (original)
+  { name: "12 Bones Smokehouse", category: "lunch", lat: 35.587567, lng: -82.564923, description: "River Arts District BBQ legend — ribs, cornbread, and famous sides; typically busy at lunch.", distance: "~24 min" },
+  { name: "Chai Pani", category: "lunch", lat: 35.591540, lng: -82.555800, description: "South Slope Indian street food — flavorful chaat, thalis, and casual plates with local buzz.", distance: "~23 min" },
+  { name: "Baba Nahm", category: "lunch", lat: 35.59502, lng: -82.55202, description: "Mediterranean small plates and shawarma in downtown Asheville — fresh, bright flavors.", distance: "~24 min" },
+  { name: "Buxton Chicken Palace", category: "lunch", lat: 35.596025, lng: -82.551232, description: "Popular fried chicken sandwiches in the S&W Market — quick and satisfying.", distance: "~24 min" },
+  { name: "Roman's Deli", category: "lunch", lat: 35.59520, lng: -82.55180, description: "Pressed sandwiches and house-made deli favorites — perfect for a quick downtown lunch.", distance: "~24 min" },
+  { name: "Wild Ginger", category: "lunch", lat: 35.55450, lng: -82.55980, description: "South Asheville Vietnamese — solid pho and fresh rolls, neighborhood favorite.", distance: "~18 min" },
+  { name: "Taco Billy", category: "lunch", lat: 35.595800, lng: -82.551400, description: "Creative breakfast & lunch tacos with local ingredients — quick service, bold flavors.", distance: "~24 min" },
 
-    // Breweries (verified / authoritative sources)
-    { name: "Burial Beer Co.", category: "brewery", lat: 35.590810, lng: -82.556520, description: "South Slope metalhead vibe. Sours, stouts, IPAs.", distance: "~23 min" },
-    { name: "Hi-Wire Brewing", category: "brewery", lat: 35.591500, lng: -82.555800, description: "South Slope with rooftop and Tiki Easy bar.", distance: "~23 min" },
-    { name: "Green Man Brewery", category: "brewery", lat: 35.591800, lng: -82.555500, description: "English-style ales, landmark brewery with rooftop.", distance: "~23 min" },
-    { name: "Zillicoah Beer Company", category: "brewery", lat: 35.587200, lng: -82.565800, description: "River Arts District riverside spot with outdoor seating.", distance: "~24 min" },
-    { name: "Highland Brewing Company", category: "brewery", lat: 35.596520, lng: -82.550800, description: "Asheville's first legal brewery—classic ales.", distance: "~25 min" },
-    { name: "Wedge Brewing Company", category: "brewery", lat: 35.586800, lng: -82.566000, description: "River Arts District beer garden and pizza.", distance: "~24 min" },
-    { name: "Asheville Brewing Co.", category: "brewery", lat: 35.592000, lng: -82.555200, description: "South Slope brewery with a movie theater and pizza.", distance: "~23 min" },
-    { name: "Twin Leaf Brewery", category: "brewery", lat: 35.591000, lng: -82.556000, description: "Small-batch Belgian-style brewing on South Slope.", distance: "~23 min" },
-    { name: "Archetype Brewing", category: "brewery", lat: 35.569000, lng: -82.588800, description: "West Asheville stylish spot with barrel-aged beers.", distance: "~19 min" },
+  // Dinner (original + extras)
+  { name: "Cúrate", category: "dinner", lat: 35.594480, lng: -82.552490, description: "Authentic Spanish tapas — reserve ahead; excellent small plates and wine pairings.", distance: "~24 min" },
+  { name: "The Admiral", category: "dinner", lat: 35.568760, lng: -82.589520, description: "West Asheville favorite blending dive-bar vibe with elevated small plates and cocktails.", distance: "~19 min" },
+  { name: "Vivian", category: "dinner", lat: 35.594820, lng: -82.552210, description: "French-inspired seasonal tasting menus and a refined downtown dining room.", distance: "~24 min" },
+  { name: "Jargon", category: "dinner", lat: 35.591820, lng: -82.555520, description: "Inventive tasting-style menu with playful flavors in the South Slope neighborhood.", distance: "~23 min" },
+  { name: "The Market Place", category: "dinner", lat: 35.595020, lng: -82.551760, description: "Farm-to-table restaurant focusing on local Appalachian ingredients and seasonal menus.", distance: "~24 min" },
+  { name: "Mother", category: "dinner", lat: 35.591200, lng: -82.556200, description: "Creative deli-style dinners, natural wines and carefully composed dishes in South Slope.", distance: "~23 min" },
 
-    // Shops (verified / authoritative listings)
-    { name: "House of Black Cat Magic", category: "shop", lat: 35.568500, lng: -82.589800, description: "West Asheville metaphysical shop — crystals, tarot, witchy vibes.", distance: "~19 min" },
-    { name: "Dark & Deviant Oddities", category: "shop", lat: 35.594800, lng: -82.552000, description: "Antique/oddity shop—taxidermy and curiosities.", distance: "~24 min" },
-    { name: "Lexington Glassworks", category: "shop", lat: 35.595200, lng: -82.551500, description: "Working glass-blowing studio—watch artists at work.", distance: "~24 min" },
-    { name: "Madam Clutterbucket's", category: "shop", lat: 35.568800, lng: -82.589200, description: "Playful gifts and sensory-friendly oddities in West Asheville.", distance: "~19 min" },
-    { name: "L.O.F.T. of Asheville", category: "shop", lat: 35.595500, lng: -82.551200, description: "Local products and eclectic decor from Asheville makers.", distance: "~24 min" },
-    { name: "Woolworth Walk", category: "shop", lat: 35.595800, lng: -82.551000, description: "170+ local artists in historic Woolworth building.", distance: "~24 min" },
-    { name: "Battery Park Book Exchange", category: "shop", lat: 35.596000, lng: -82.550800, description: "Books and a champagne bar in Grove Arcade.", distance: "~24 min" },
-    { name: "Marquee Asheville", category: "shop", lat: 35.587000, lng: -82.565500, description: "Large vintage & antiques market in the River Arts District.", distance: "~24 min" },
-    { name: "Raven and Crone", category: "shop", lat: 35.594500, lng: -82.552500, description: "Metaphysical supplies downtown—crystals, herbs, tarot.", distance: "~24 min" }
+  // Dinner extras (new)
+  { name: "Chai Pani Indian Street Food (South Slope - dinner menu)", category: "dinner", lat: 35.591540, lng: -82.555800, description: "Same great plates from Chai Pani with evening small plates and street-food style dishes.", distance: "~23 min" },
+  { name: "Sovereign Remedies", category: "dinner", lat: 35.594300, lng: -82.551000, description: "Upscale spot with seasonal American cuisine and craft cocktails — great for a nicer night out.", distance: "~24 min" },
+  { name: "Limones", category: "dinner", lat: 35.592100, lng: -82.554200, description: "Mexican-Californian coastal flavors with bright plates and margarita selection.", distance: "~23 min" },
+
+  // Breweries (original)
+  { name: "Burial Beer Co.", category: "brewery", lat: 35.590810, lng: -82.556520, description: "South Slope brewery with edgy branding and a rotating lineup of sours, stouts and IPAs.", distance: "~23 min" },
+  { name: "Hi-Wire Brewing", category: "brewery", lat: 35.591500, lng: -82.555800, description: "South Slope location with rooftop space and an accessible beer list.", distance: "~23 min" },
+  { name: "Green Man Brewery", category: "brewery", lat: 35.591800, lng: -82.555500, description: "Heralded for English-style ales; classic spot with a loyal local following.", distance: "~23 min" },
+  { name: "Zillicoah Beer Company", category: "brewery", lat: 35.587200, lng: -82.565800, description: "River Arts District riverside brewery with outdoor seating and family-friendly vibes.", distance: "~24 min" },
+  { name: "Highland Brewing Company", category: "brewery", lat: 35.596520, lng: -82.550800, description: "One of Asheville's original breweries — classic beer styles and a relaxed taproom.", distance: "~25 min" },
+  { name: "Wedge Brewing Company", category: "brewery", lat: 35.586800, lng: -82.566000, description: "Outdoor beer garden in the River Arts District, pizza and beers by the river.", distance: "~24 min" },
+  { name: "Asheville Brewing Co.", category: "brewery", lat: 35.592000, lng: -82.555200, description: "South Slope brewery with a small cinema and casual pizza options.", distance: "~23 min" },
+  { name: "Twin Leaf Brewery", category: "brewery", lat: 35.591000, lng: -82.556000, description: "Belgian-inspired small-batch brewery on South Slope — flavorful traditional ales.", distance: "~23 min" },
+  { name: "Archetype Brewing", category: "brewery", lat: 35.569000, lng: -82.588800, description: "West Asheville brewery with barrel-aged beers and a hip tasting room.", distance: "~19 min" },
+
+  // Shops (original + extras)
+  { name: "House of Black Cat Magic", category: "shop", lat: 35.568500, lng: -82.589800, description: "Metaphysical shop in West Asheville — crystals, tarot, and witchy curios.", distance: "~19 min" },
+  { name: "Dark & Deviant Oddities", category: "shop", lat: 35.594800, lng: -82.552000, description: "Oddities and antique curios with a dark, museum-like collection.", distance: "~24 min" },
+  { name: "Lexington Glassworks", category: "shop", lat: 35.595200, lng: -82.551500, description: "Working glass-blowing studio with pieces for sale — watch artists during the day.", distance: "~24 min" },
+  { name: "Madam Clutterbucket's", category: "shop", lat: 35.568800, lng: -82.589200, description: "Playful gift shop with eclectic, sensory-friendly items and local finds.", distance: "~19 min" },
+  { name: "L.O.F.T. of Asheville", category: "shop", lat: 35.595500, lng: -82.551200, description: "Collective of local makers and curated home goods — great for unique souvenirs.", distance: "~24 min" },
+  { name: "Woolworth Walk", category: "shop", lat: 35.595800, lng: -82.551000, description: "Multi-vendor space in historic Woolworth building with local artisan goods.", distance: "~24 min" },
+  { name: "Battery Park Book Exchange", category: "shop", lat: 35.596000, lng: -82.550800, description: "Grove Arcade bookshop with champagne bar — browse books and grab a drink.", distance: "~24 min" },
+  { name: "Marquee Asheville", category: "shop", lat: 35.587000, lng: -82.565500, description: "Large antiques and vintage market in the River Arts District.", distance: "~24 min" },
+  { name: "Raven and Crone", category: "shop", lat: 35.594500, lng: -82.552500, description: "Downtown metaphysical shop — crystals, herbs, occult books and tools.", distance: "~24 min" },
+
+  // Shops extras (new)
+  { name: "Tucker's French Bread", category: "shop", lat: 35.595800, lng: -82.554200, description: "Local bakery selling artisan loaves, pastries, and sandwiches — perfect for picnic supplies.", distance: "~24 min" },
+  { name: "Grove Arcade Artisan Shops", category: "shop", lat: 35.596200, lng: -82.550900, description: "Historic arcade filled with local craft, jewelry, clothing and specialty food shops.", distance: "~24 min" },
+  { name: "West Asheville Vintage", category: "shop", lat: 35.567900, lng: -82.589900, description: "Curated vintage clothing and retro finds in West Asheville.", distance: "~19 min" },
+
+  // Attractions (new — Biltmore excluded)
+  { name: "River Arts District", category: "shop", lat: 35.587300, lng: -82.566000, description: "Cluster of working studios, galleries and street art along the French Broad River — great for strolling and photos.", distance: "~24 min" },
+  { name: "Asheville Art Museum", category: "attraction", lat: 35.595300, lng: -82.553600, description: "Contemporary art museum in downtown Asheville featuring rotating exhibitions and a rooftop view.", distance: "~24 min" },
+  { name: "Southern Highland Craft Guild (Grove Park Inn area)", category: "attraction", lat: 35.598800, lng: -82.555800, description: "Exhibits and shops showcasing Appalachian craft; excellent for handmade gifts and regional art.", distance: "~26 min" },
+  { name: "North Carolina Arboretum", category: "attraction", lat: 35.530400, lng: -82.520700, description: "Large public gardens and trails just south of Asheville — gardens, exhibits and seasonal displays.", distance: "~20 min" },
+
+  // Small housekeeping entry to ensure array formatting ends cleanly
 ];
+
 
         
         const categoryColors = {
